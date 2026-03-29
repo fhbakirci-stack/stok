@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Depo Master">
+    
+    <link rel="apple-touch-icon" href="https://i.ibb.co/40sY8j7/Gemini-Generated-mage-df6lt7df6lt7df6l.png">
+    <link rel="icon" href="https://i.ibb.co/40sY8j7/Gemini-Generated-mage-df6lt7df6lt7df6l.png">
+
+    <title>Depo Master</title>
+    <style>
+        :root { 
+            --bg: #F2F2F7; --card: #FFFFFF; --text: #1C1C1E; 
+            --gold: #D4AF37; --blue: #007AFF; --red: #FF3B30; --green: #34C759; --gray: #8E8E93;
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+        body { margin: 0; background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; position: fixed; width: 100%; }
+
+        /* --- AUTH --- */
+        #auth { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .pin-dots { display: flex; gap: 15px; margin-bottom: 40px; }
+        .dot { width: 14px; height: 14px; border: 1.5px solid var(--gray); border-radius: 50%; }
+        .dot.active { background: var(--text); border-color: var(--text); }
+        .numpad { display: grid; grid-template-columns: repeat(3, 80px); gap: 20px; }
+        .n-btn { height: 80px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 300; border-radius: 50%; background: var(--card); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+        /* --- APP HEADER --- */
+        .app { display: none; height: 100%; flex-direction: column; }
+        header { padding: calc(env(safe-area-inset-top) + 20px) 20px 10px; background: var(--bg); display: flex; justify-content: space-between; align-items: center; }
+        h1 { margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -1px; }
+        h1 span { color: var(--gold); }
+        .user { font-size: 11px; color: var(--gray); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* --- NAVIGATION --- */
+        .nav { display: flex; padding: 10px 20px; gap: 10px; }
+        .nav-btn { flex: 1; padding: 10px; text-align: center; border-radius: 10px; font-size: 13px; font-weight: 700; background: #E5E5EA; color: var(--gray); }
+        .nav-btn.active { background: var(--card); color: var(--gold); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+
+        /* --- FILTER BAR (MODERN SELECT) --- */
+        .filter-bar { padding: 10px 20px; display: none; gap: 8px; background: var(--bg); }
+        .f-select { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #ddd; font-size: 14px; background: var(--card); font-weight: 600; outline: none; }
+
+        /* --- CONTENT --- */
+        main { flex: 1; overflow-y: scroll; padding: 10px 20px 150px; -webkit-overflow-scrolling: touch; }
+        .cat-header { font-size: 18px; font-weight: 800; color: var(--gold); margin: 25px 0 10px 5px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+        .card { background: var(--card); border-radius: 16px; padding: 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+        .card:active { transform: scale(0.98); background: #FAFAFA; }
+        .p-info b { display: block; font-size: 17px; margin-bottom: 4px; }
+        .p-info span { font-size: 11px; color: var(--gray); font-weight: 700; text-transform: uppercase; }
+        .p-qty { text-align: right; font-size: 19px; font-weight: 700; color: var(--text); }
+
+        /* --- FOOTER BTNS --- */
+        .footer-btns { position: fixed; bottom: calc(env(safe-area-inset-bottom) + 20px); left: 0; width: 100%; display: flex; justify-content: center; gap: 10px; z-index: 100; }
+        .add-btn { background: var(--text); color: #FFF; padding: 15px 20px; border-radius: 30px; font-weight: 700; font-size: 13px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; }
+        .add-btn span { color: var(--gold); font-size: 18px; font-weight: 800; }
+
+        /* --- MODALS --- */
+        .modal { position: fixed; inset: 0; background: var(--bg); z-index: 500; display: none; flex-direction: column; padding: calc(env(safe-area-inset-top) + 30px) 25px 50px; overflow-y: auto; }
+        .modal-title { font-size: 28px; font-weight: 800; margin-bottom: 30px; }
+        .modal-title span { color: var(--gold); }
+        .input-box { margin-bottom: 20px; }
+        .input-box label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 8px; color: var(--gray); }
+        .field { width: 100%; padding: 16px; border-radius: 12px; border: 1px solid #DDD; background: var(--card); font-size: 16px; outline: none; }
+        
+        .btn-group { margin-top: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: env(safe-area-inset-bottom); }
+        .btn { padding: 18px; border-radius: 15px; border: none; font-weight: 700; font-size: 15px; width: 100%; }
+        .btn-blue { background: var(--text); color: #FFF; }
+        .btn-blue span { color: var(--gold); }
+        .btn-cancel { background: transparent; color: var(--gray); }
+
+        .log-card { border-left: 4px solid var(--red); }
+        .log-meta { font-size: 11px; color: var(--gray); margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<div id="auth">
+    <header><h1>Depo<span>Master</span></h1><br><br><br><br><br></header>
+    <div class="pin-dots">
+        <div class="dot" id="d1"></div><div class="dot" id="d2"></div>
+        <div class="dot" id="d3"></div><div class="dot" id="d4"></div>
+    </div>
+    <div class="numpad">
+        <div class="n-btn" onclick="k(1)">1</div><div class="n-btn" onclick="k(2)">2</div><div class="n-btn" onclick="k(3)">3</div>
+        <div class="n-btn" onclick="k(4)">4</div><div class="n-btn" onclick="k(5)">5</div><div class="n-btn" onclick="k(6)">6</div>
+        <div class="n-btn" onclick="k(7)">7</div><div class="n-btn" onclick="k(8)">8</div><div class="n-btn" onclick="k(9)">9</div>
+        <div class="n-btn" style="color:var(--gray); font-size:14px;" onclick="pin=''">SİL</div>
+        <div class="n-btn" onclick="k(0)">0</div>
+        <div class="n-btn" style="color:var(--gray); font-size:14px;" onclick="location.reload()">X</div>
+    </div>
+</div>
+
+<div class="app" id="app">
+    <header>
+        <h1>Depo<span>Master</span></h1>
+        <div class="user">FATİH BAKIRCI • MERKEZ DEPO</div>
+    </header>
+
+    <div class="nav">
+        <div class="nav-btn active" id="n-s" onclick="tab('s')">Envanter</div>
+        <div class="nav-btn" id="n-l" onclick="tab('l')">Sevkiyat</div>
+    </div>
+
+    <div id="filter-area" class="filter-bar">
+        <select id="f-dest" class="f-select" onchange="renderL()">
+            <option value="">TÜM SEVKİYATLAR</option>
+        </select>
+    </div>
+
+    <main>
+        <div id="view-s"><div id="list-s"></div></div>
+        <div id="view-l" style="display:none"><div id="list-l"></div></div>
+    </main>
+
+    <div class="footer-btns">
+        <div class="add-btn" style="background:#8E8E93" onclick="openM('cat')"><span>+</span> Kategori</div>
+        <div class="add-btn" onclick="openM('new')"><span>+</span> Ürün Ekle</div>
+    </div>
+</div>
+
+<div class="modal" id="m-cat">
+    <div class="modal-title">Kategori <span>Ekle</span></div>
+    <div class="input-box"><label>KATEGORİ ADI</label><input type="text" id="cn" class="field" placeholder="Örn: Püreler"></div>
+    <div class="btn-group">
+        <button class="btn btn-blue" onclick="saveCat()">Kategoriyi <span>Kaydet</span></button>
+        <button class="btn btn-cancel" onclick="closeM()">Vazgeç</button>
+    </div>
+</div>
+
+<div class="modal" id="m-new">
+    <div class="modal-title">Ürün <span>Tanımla</span></div>
+    <div class="input-box"><label>KATEGORİ SEÇİN</label><select id="fc" class="field"></select></div>
+    <div class="input-box">
+        <label>BİRİM TİPİ</label>
+        <div class="nav" style="padding:0">
+            <div class="nav-btn active" id="bt-koli" onclick="st('koli')">Koli</div>
+            <div class="nav-btn" id="bt-kg" onclick="st('kg')">Kilogram</div>
+            <div class="nav-btn" id="bt-adet" onclick="st('adet')">Tekil Adet</div>
+        </div>
+    </div>
+    <div class="input-box"><label>ÜRÜN ADI</label><input type="text" id="fn" class="field" placeholder="Örn: Çilek Püre"></div>
+    <div class="input-box" id="p-box"><label>KOLİ İÇİ ADET</label><input type="number" id="fp" class="field" value="6"></div>
+    <div class="btn-group">
+        <button class="btn btn-blue" onclick="saveP()">Ürünü <span>Kaydet</span></button>
+        <button class="btn btn-cancel" onclick="closeM()">Vazgeç</button>
+    </div>
+</div>
+
+<div class="modal" id="m-tran">
+    <div class="modal-title" id="tn">---</div>
+    <div class="nav" style="padding:0; margin-bottom:30px;">
+        <div class="nav-btn active" id="tm-in" onclick="sm('in')">Stok Girişi (+)</div>
+        <div class="nav-btn" id="tm-out" onclick="sm('out')">Sevkiyat (-)</div>
+    </div>
+    <div id="u-box" class="nav" style="padding:0; margin-bottom:20px; display:none;">
+        <div class="nav-btn active" id="tu-koli" onclick="su('koli')">Koli</div>
+        <div class="nav-btn" id="tu-adet" onclick="su('adet')">Adet</div>
+    </div>
+    <div class="input-box"><label>MİKTAR</label><input type="number" id="tq" class="field" placeholder="0"></div>
+    <div class="input-box"><label id="tl">AÇIKLAMA / ŞUBE</label><input type="text" id="tt" class="field" placeholder="Örn: Kadıköy Şube"></div>
+    <div class="btn-group">
+        <button id="tsb" class="btn btn-blue" onclick="saveT()">İşlemi Onayla</span></button>
+        <button class="btn" style="color:var(--red)" onclick="delP()">Ürünü Sil</button>
+        <button class="btn btn-cancel" onclick="closeM()">Kapat</button>
+    </div>
+</div>
+
+<script>
+    let pin = ""; let type = 'koli'; let mode = 'in'; let unit = 'koli'; let activeId = null;
+    let db = JSON.parse(localStorage.getItem('dm_pro_v14_db')) || { p: [], l: [], c: ["DİĞER"] };
+
+    function k(n) {
+        if(pin.length < 4) { pin += n; updatePin();
+            if(pin === "1252") { document.getElementById('auth').style.display='none'; document.getElementById('app').style.display='flex'; render(); }
+            else if(pin.length === 4) { setTimeout(()=> { pin=""; updatePin(); }, 300); }
+        }
+    }
+    function updatePin() { for(let i=1; i<=4; i++) document.getElementById('d'+i).classList.toggle('active', i <= pin.length); }
+
+    function tab(t) {
+        document.getElementById('view-s').style.display = t==='s'?'block':'none';
+        document.getElementById('view-l').style.display = t==='l'?'block':'none';
+        document.getElementById('filter-area').style.display = t==='l'?'flex':'none';
+        document.getElementById('n-s').classList.toggle('active', t==='s');
+        document.getElementById('n-l').classList.toggle('active', t==='l');
+        if(t==='l') { updateDestList(); renderL(); }
+    }
+
+    // Sevkiyat yapılan hedefleri toplayıp listeye ekler
+    function updateDestList() {
+        const sel = document.getElementById('f-dest');
+        const currentVal = sel.value;
+        const targets = [...new Set(db.l.filter(x=>x.m==='out').map(x=>x.t.toUpperCase()))].sort();
+        sel.innerHTML = '<option value="">TÜM SEVKİYATLAR</option>';
+        targets.forEach(t => sel.innerHTML += `<option value="${t}">${t}</option>`);
+        sel.value = currentVal;
+    }
+
+    function openM(m, id) {
+        if(m==='cat') { document.getElementById('m-cat').style.display='flex'; }
+        else if(m==='new') { 
+            type='koli'; st('koli'); 
+            const sel = document.getElementById('fc'); sel.innerHTML = "";
+            db.c.forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
+            document.getElementById('m-new').style.display='flex'; 
+        }
+        else {
+            activeId = id; const p = db.p.find(x=>x.id===id);
+            document.getElementById('tn').innerText = p.name;
+            document.getElementById('m-tran').style.display='flex';
+            sm('in');
+        }
+    }
+    function closeM() { document.querySelectorAll('.modal').forEach(m=>m.style.display='none'); }
+
+    function st(t) { type=t; ['koli','kg','adet'].forEach(x=>document.getElementById('bt-'+x).classList.toggle('active', x===t)); document.getElementById('p-box').style.display = t==='koli'?'block':'none'; }
+    function sm(m) { 
+        mode=m; document.getElementById('tm-in').classList.toggle('active', m==='in'); document.getElementById('tm-out').classList.toggle('active', m==='out');
+        const p = db.p.find(x=>x.id===activeId);
+        document.getElementById('u-box').style.display = (m==='out' && p.type==='koli') ? 'flex' : 'none';
+        document.getElementById('tl').innerText = m==='in' ? 'NEREDEN GELİYOR?' : 'NEREYE GİDİYOR?';
+        document.getElementById('tsb').style.background = m==='in' ? 'var(--green)' : 'var(--text)';
+        su('koli');
+    }
+    function su(u) { unit=u; document.getElementById('tu-koli').classList.toggle('active', u==='koli'); document.getElementById('tu-adet').classList.toggle('active', u==='adet'); }
+
+    function saveCat() {
+        const val = document.getElementById('cn').value.toUpperCase();
+        if(val && !db.c.includes(val)) { db.c.push(val); sync(); closeM(); document.getElementById('cn').value=""; }
+    }
+
+    function saveP() {
+        const n = document.getElementById('fn').value, p = parseInt(document.getElementById('fp').value)||1, c = document.getElementById('fc').value;
+        if(n) { db.p.push({id:Date.now(), name:n, type, parite:p, total:0, cat:c}); sync(); closeM(); document.getElementById('fn').value=""; }
+    }
+
+    function saveT() {
+        const q = parseFloat(document.getElementById('tq').value), t = document.getElementById('tt').value;
+        if(!q || (mode==='out' && !t)) return;
+        const p = db.p.find(x=>x.id===activeId);
+        let change = (p.type==='koli' && unit==='koli') ? q * p.parite : q;
+        p.total += (mode==='in' ? change : -change);
+        db.l.unshift({ n:p.name, m:mode, v:change, t:t||'Merkez', d:new Date().toLocaleDateString('tr-TR'), pRef:p });
+        sync(); closeM(); document.getElementById('tq').value=""; document.getElementById('tt').value="";
+    }
+
+    function delP() { if(confirm("Siliyorum?")) { db.p = db.p.filter(x=>x.id!==activeId); sync(); closeM(); } }
+    function sync() { localStorage.setItem('dm_pro_v14_db', JSON.stringify(db)); render(); }
+
+    function fmt(v, t, p) {
+        if(t==='kg') return v.toFixed(2) + " KG";
+        if(t==='adet') return Math.round(v) + " ADET";
+        const k = Math.floor(v/p), a = Math.round(v%p);
+        return (k>0?k+" KOLİ ":"")+(a>0||k===0?a+" ADET":"");
+    }
+
+    function render() {
+        const list = document.getElementById('list-s'); list.innerHTML = "";
+        db.c.forEach(catName => {
+            const products = db.p.filter(p => (p.cat || "DİĞER") === catName);
+            if(products.length > 0) {
+                const head = document.createElement('div');
+                head.className = 'cat-header';
+                head.innerText = catName;
+                list.appendChild(head);
+                products.forEach(p => {
+                    const d = document.createElement('div'); d.className = 'card'; d.onclick = () => openM('tran', p.id);
+                    d.innerHTML = `<div class="p-info"><b>${p.name}</b><span>${p.type} | İç: ${p.parite}</span></div>
+                                   <div class="p-qty">${fmt(p.total, p.type, p.parite)}</div>`;
+                    list.appendChild(d);
+                });
+            }
+        });
+    }
+
+    function renderL() {
+        const list = document.getElementById('list-l'); list.innerHTML = "";
+        const fDest = document.getElementById('f-dest').value;
+        db.l.filter(x => {
+            const matchMode = x.m === 'out';
+            const matchDest = fDest ? x.t.toUpperCase() === fDest : true;
+            return matchMode && matchDest;
+        }).forEach(x => {
+            const d = document.createElement('div'); d.className = 'card log-card';
+            d.innerHTML = `<div><b>${x.n}</b><div class="log-meta">HEDEF: ${x.t.toUpperCase()} • ${x.d}</div></div>
+                           <div class="p-qty" style="color:var(--red)">-${fmt(x.v, x.pRef.type, x.pRef.parite)}</div>`;
+            list.appendChild(d);
+        });
+    }
+</script>
+</body>
+</html>
