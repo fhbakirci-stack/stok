@@ -40,7 +40,7 @@
         .nav-btn { flex: 1; padding: 10px; text-align: center; border-radius: 10px; font-size: 13px; font-weight: 700; background: #E5E5EA; color: var(--gray); }
         .nav-btn.active { background: var(--card); color: var(--gold); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 
-        /* --- FILTER BAR (MODERN SELECT) --- */
+        /* --- FILTER BAR --- */
         .filter-bar { padding: 10px 20px; display: none; gap: 8px; background: var(--bg); }
         .f-select { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #ddd; font-size: 14px; background: var(--card); font-weight: 600; outline: none; }
 
@@ -51,7 +51,7 @@
         .card:active { transform: scale(0.98); background: #FAFAFA; }
         .p-info b { display: block; font-size: 17px; margin-bottom: 4px; }
         .p-info span { font-size: 11px; color: var(--gray); font-weight: 700; text-transform: uppercase; }
-        .p-qty { text-align: right; font-size: 19px; font-weight: 700; color: var(--text); }
+        .p-qty { text-align: right; font-size: 17px; font-weight: 700; color: var(--text); line-height: 1.2; }
 
         /* --- FOOTER BTNS --- */
         .footer-btns { position: fixed; bottom: calc(env(safe-area-inset-bottom) + 20px); left: 0; width: 100%; display: flex; justify-content: center; gap: 10px; z-index: 100; }
@@ -163,15 +163,15 @@
     <div class="input-box"><label>MİKTAR</label><input type="number" id="tq" class="field" placeholder="0"></div>
     <div class="input-box"><label id="tl">AÇIKLAMA / ŞUBE</label><input type="text" id="tt" class="field" placeholder="Örn: Kadıköy Şube"></div>
     <div class="btn-group">
-        <button id="tsb" class="btn btn-blue" onclick="saveT()">İşlemi Onayla</span></button>
-        <button class="btn" style="color:var(--red)" onclick="delP()">Ürünü Sil</button>
+        <button id="tsb" class="btn btn-blue" onclick="saveT()">İşlemi <span>Onayla</span></button>
+        <button class="btn" style="color:var(--red)" onclick="delP()">Ürünü SİSTEMDEN SİL</button>
         <button class="btn btn-cancel" onclick="closeM()">Kapat</button>
     </div>
 </div>
 
 <script>
     let pin = ""; let type = 'koli'; let mode = 'in'; let unit = 'koli'; let activeId = null;
-    let db = JSON.parse(localStorage.getItem('dm_pro_v14_db')) || { p: [], l: [], c: ["DİĞER"] };
+    let db = JSON.parse(localStorage.getItem('dm_pro_v17_db')) || { p: [], l: [], c: ["DİĞER"] };
 
     function k(n) {
         if(pin.length < 4) { pin += n; updatePin();
@@ -190,7 +190,6 @@
         if(t==='l') { updateDestList(); renderL(); }
     }
 
-    // Sevkiyat yapılan hedefleri toplayıp listeye ekler
     function updateDestList() {
         const sel = document.getElementById('f-dest');
         const currentVal = sel.value;
@@ -244,18 +243,44 @@
         const p = db.p.find(x=>x.id===activeId);
         let change = (p.type==='koli' && unit==='koli') ? q * p.parite : q;
         p.total += (mode==='in' ? change : -change);
-        db.l.unshift({ n:p.name, m:mode, v:change, t:t||'Merkez', d:new Date().toLocaleDateString('tr-TR'), pRef:p });
+        db.l.unshift({ lid: Date.now(), pid: p.id, n:p.name, m:mode, v:change, t:t||'Merkez', d:new Date().toLocaleDateString('tr-TR'), pRef:p });
         sync(); closeM(); document.getElementById('tq').value=""; document.getElementById('tt').value="";
     }
 
-    function delP() { if(confirm("Siliyorum?")) { db.p = db.p.filter(x=>x.id!==activeId); sync(); closeM(); } }
-    function sync() { localStorage.setItem('dm_pro_v14_db', JSON.stringify(db)); render(); }
+    // KAYIT SİLME VE STOK DÜZELTME
+    function deleteLog(lid) {
+        if(confirm("Bu işlemi silmek istiyor musun? Stok miktarı geri alınacaktır.")) {
+            const logIdx = db.l.findIndex(x => x.lid === lid);
+            const log = db.l[logIdx];
+            const p = db.p.find(x => x.id === log.pid);
+            
+            if(p) {
+                // İşlem geri alma: Giriş ise çıkar, çıkış ise geri ekle
+                p.total += (log.m === 'in' ? -log.v : log.v);
+            }
+            db.l.splice(logIdx, 1);
+            sync();
+            updateDestList();
+            renderL();
+        }
+    }
 
+    function delP() { if(confirm("Ürünü tüm geçmişiyle birlikte sistemden siliyorum?")) { db.p = db.p.filter(x=>x.id!==activeId); sync(); closeM(); } }
+    function sync() { localStorage.setItem('dm_pro_v17_db', JSON.stringify(db)); render(); }
+
+    // GELİŞMİŞ KOLİ+ADET FORMATI
     function fmt(v, t, p) {
         if(t==='kg') return v.toFixed(2) + " KG";
         if(t==='adet') return Math.round(v) + " ADET";
-        const k = Math.floor(v/p), a = Math.round(v%p);
-        return (k>0?k+" KOLİ ":"")+(a>0||k===0?a+" ADET":"");
+        
+        let k = Math.floor(v / p);
+        let a = Math.round(v % p);
+        
+        let res = [];
+        if(k !== 0) res.push(k + " KOLİ");
+        if(a !== 0 || k === 0) res.push(a + " ADET");
+        
+        return res.join("<br>");
     }
 
     function render() {
@@ -263,13 +288,11 @@
         db.c.forEach(catName => {
             const products = db.p.filter(p => (p.cat || "DİĞER") === catName);
             if(products.length > 0) {
-                const head = document.createElement('div');
-                head.className = 'cat-header';
-                head.innerText = catName;
+                const head = document.createElement('div'); head.className = 'cat-header'; head.innerText = catName;
                 list.appendChild(head);
                 products.forEach(p => {
                     const d = document.createElement('div'); d.className = 'card'; d.onclick = () => openM('tran', p.id);
-                    d.innerHTML = `<div class="p-info"><b>${p.name}</b><span>${p.type} | İç: ${p.parite}</span></div>
+                    d.innerHTML = `<div class="p-info"><b>${p.name}</b><span>İç: ${p.parite} Adet</span></div>
                                    <div class="p-qty">${fmt(p.total, p.type, p.parite)}</div>`;
                     list.appendChild(d);
                 });
@@ -286,6 +309,7 @@
             return matchMode && matchDest;
         }).forEach(x => {
             const d = document.createElement('div'); d.className = 'card log-card';
+            d.onclick = () => deleteLog(x.lid); // Silme özelliği eklendi
             d.innerHTML = `<div><b>${x.n}</b><div class="log-meta">HEDEF: ${x.t.toUpperCase()} • ${x.d}</div></div>
                            <div class="p-qty" style="color:var(--red)">-${fmt(x.v, x.pRef.type, x.pRef.parite)}</div>`;
             list.appendChild(d);
