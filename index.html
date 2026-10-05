@@ -8,16 +8,15 @@
         :root {
             --primary: #0066CC;
             --primary-hover: #0052A3;
-            --bg: #F4F5F7;
-            --card-bg: #FFFFFF;
-            --text-main: #1C1E21;
-            --text-secondary: #65676B;
-            --border: #E4E6EB;
-            --success: #2E7D32;
-            --danger: #D32F2F;
-            --warning: #ED6C02;
+            --bg: #F2F4F7;           /* Göz yormayan yumuşak açık gri */
+            --card-bg: #FFFFFF;      /* Net kart zemini */
+            --text-main: #1A1D20;    /* Derin koyu gri metin */
+            --text-secondary: #6B7280;/* İkincil gri */
+            --border: #D1D5DB;       /* İnce zarif kenarlık */
+            --success: #10B981;
+            --danger: #EF4444;
             --radius: 14px;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            --shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
         }
 
         * {
@@ -51,13 +50,13 @@
             font-size: 20px;
             font-weight: 700;
             margin: 0;
-            color: #111;
+            color: #111827;
             letter-spacing: -0.5px;
         }
 
         .page {
             display: none;
-            animation: fadeIn 0.25s ease;
+            animation: fadeIn 0.2s ease;
         }
 
         .page.active {
@@ -88,15 +87,15 @@
 
         .input-group {
             margin-bottom: 16px;
+            width: 100%;
         }
 
+        /* Tarihlerin taşmasını önleyen kusursuz grid yapısı */
         .row-inputs {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 10px;
-        }
-
-        .row-inputs .input-group {
-            flex: 1;
+            margin-bottom: 0;
         }
 
         label {
@@ -111,12 +110,12 @@
 
         input, select {
             width: 100%;
-            padding: 13px 14px;
-            background: #F8F9FA;
+            padding: 12px;
+            background: #F9FAFB;
             border: 1px solid var(--border);
             border-radius: 10px;
             color: var(--text-main);
-            font-size: 15px;
+            font-size: 14px;
             outline: none;
             transition: border-color 0.2s, background 0.2s;
         }
@@ -126,18 +125,24 @@
             background: #FFFFFF;
         }
 
+        /* Tarih inputlarının mobilde sıkışmasını engelleme */
+        input[type="date"] {
+            font-size: 13px;
+            padding: 11px 8px;
+        }
+
         .btn-main {
             background: var(--primary);
             color: white;
             border: none;
             border-radius: 10px;
-            padding: 15px;
+            padding: 14px;
             font-size: 15px;
             font-weight: 600;
             width: 100%;
             cursor: pointer;
             margin-top: 6px;
-            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.25);
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2);
             transition: background 0.2s;
         }
 
@@ -146,7 +151,7 @@
         }
 
         .btn-pdf {
-            background: #E53935;
+            background: #DC2626;
             color: white;
             border: none;
             border-radius: 10px;
@@ -160,18 +165,18 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-shadow: 0 4px 12px rgba(229, 57, 53, 0.25);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
         }
 
         .btn-main:active, .btn-pdf:active { opacity: 0.85; }
 
-        /* Modern Alt Navigasyon Çubuğu */
+        /* Alt Navigasyon */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.92);
             border-top: 1px solid var(--border);
             display: flex;
             justify-content: space-around;
@@ -221,7 +226,7 @@
         }
 
         th {
-            background: #F0F2F5;
+            background: #E5E7EB;
             color: var(--text-secondary);
             padding: 10px 12px;
             font-size: 11px;
@@ -236,7 +241,7 @@
         }
 
         .btn-action {
-            background: #2E7D32;
+            background: var(--success);
             color: white;
             border: none;
             padding: 8px 12px;
@@ -247,7 +252,7 @@
         }
 
         .btn-danger {
-            background: #D32F2F;
+            background: var(--danger);
             color: white;
             border: none;
             padding: 6px 10px;
@@ -258,10 +263,10 @@
 
         .stats-box {
             display: flex;
-            background: #EBF3FF;
-            border: 1px solid #CCE0FF;
+            background: #EFF6FF;
+            border: 1px solid #BFDBFE;
             border-radius: 12px;
-            padding: 16px;
+            padding: 14px 16px;
             margin-bottom: 16px;
             justify-content: space-between;
             align-items: center;
@@ -281,7 +286,7 @@
 
 <div class="app-container">
     <header>
-        <h1>Araç Takip Sistemi</h1>
+        <h1>ARAÇ TAKİP SİSTEMİ</h1>
         <span style="font-size: 12px; color: var(--text-secondary);" id="topTarih"></span>
     </header>
 
@@ -327,9 +332,7 @@
                             <th>İşlem</th>
                         </tr>
                     </thead>
-                    <tbody id="aktifSeferlerBody">
-                        <!-- Dinamik -->
-                    </tbody>
+                    <tbody id="aktifSeferlerBody"></tbody>
                 </table>
             </div>
         </div>
@@ -364,9 +367,7 @@
                             <th>İşlem</th>
                         </tr>
                     </thead>
-                    <tbody id="araclarTabloBody">
-                        <!-- Dinamik -->
-                    </tbody>
+                    <tbody id="araclarTabloBody"></tbody>
                 </table>
             </div>
         </div>
@@ -384,20 +385,23 @@
                 </select>
             </div>
 
-            <div class="row-inputs">
-                <div class="input-group">
-                    <label>Başlangıç Tarihi</label>
-                    <input type="date" id="tarihBas" onchange="aracGecmisiniYukle()">
-                </div>
-                <div class="input-group">
-                    <label>Bitiş Tarihi</label>
-                    <input type="date" id="tarihBit" onchange="aracGecmisiniYukle()">
+            <!-- Düzeltilmiş Yan Yana Tarih Alanı (Taşma Yapmaz) -->
+            <div class="input-group">
+                <div class="row-inputs">
+                    <div>
+                        <label>Başlangıç</label>
+                        <input type="date" id="tarihBas" onchange="aracGecmisiniYukle()">
+                    </div>
+                    <div>
+                        <label>Bitiş</label>
+                        <input type="date" id="tarihBit" onchange="aracGecmisiniYukle()">
+                    </div>
                 </div>
             </div>
 
             <div class="stats-box">
                 <span style="font-size: 13px; color: var(--text-secondary); font-weight: 600;">Seçilen Aralık Toplam Yol</span>
-                <span style="font-size: 18px; font-weight: 700; color: var(--primary);" id="toplamYolGosterge">0 KM</span>
+                <span style="font-size: 16px; font-weight: 700; color: var(--primary);" id="toplamYolGosterge">0 KM</span>
             </div>
 
             <div class="table-container">
@@ -411,9 +415,7 @@
                             <th>Toplam</th>
                         </tr>
                     </thead>
-                    <tbody id="gecmisTabloBody">
-                        <!-- Dinamik -->
-                    </tbody>
+                    <tbody id="gecmisTabloBody"></tbody>
                 </table>
             </div>
 
