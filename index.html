@@ -10,10 +10,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Araç Takip">
     
-    <!-- iPhone için Doğrudan Görsel İkon (Data URI PNG/SVG) -->
-        <link rel="icon" href="https://fhbakirci-stack.github.io/stok/favicon.ico" type="image/x-icon" />
-        <link rel="shortcut icon" href="https://fhbakirci-stack.github.io/stok/favicon.ico" type="image/x-icon" />
-
+    <!-- iPhone ve Tarayıcı için Net PNG İkon Bağlantıları -->
+    <link rel="icon" type="image/png" href="https://img.icons8.com/ios-filled/50/ffffff/truck.png">
+    <link rel="apple-touch-icon" href="https://img.icons8.com/ios-filled/180/ffffff/truck.png">
+    
     <style>
         :root {
             --primary: #333333;           
@@ -275,7 +275,7 @@
         /* PDF Çıktı Modu */
         @media print {
             body { background: white; color: black; padding: 0; }
-            .bottom-nav, .input-group, .btn-pdf, header { display: none !important; }
+            .bottom-nav, .input-group, .btn-pdf, header, .no-print { display: none !important; }
             .glass-card { border: none; box-shadow: none; padding: 0; margin: 0; background: white !important; }
             table { width: 100%; border: 1px solid #ccc; }
             th, td { border: 1px solid #ccc; color: black; background: white !important; }
@@ -399,6 +399,7 @@
                             <th>Çıkış</th>
                             <th>Dönüş</th>
                             <th>Toplam</th>
+                            <th class="no-print">İşlem</th>
                         </tr>
                     </thead>
                     <tbody id="gecmisTabloBody"></tbody>
@@ -480,6 +481,13 @@
     function aracSil(plaka) {
         if(confirm(`${plaka} plakalı aracı silmek istiyor musunuz?`)) {
             araclar = araclar.filter(a => a.plaka !== plaka);
+            verileriKaydet();
+        }
+    }
+
+    function seferSil(id) {
+        if(confirm("Bu sefer kaydını silmek istediğinize emin misiniz?")) {
+            seferler = seferler.filter(s => s.id !== id);
             verileriKaydet();
         }
     }
@@ -592,7 +600,7 @@
 
         if(!secilenPlaka) {
             document.getElementById('toplamYolGosterge').innerText = '0 KM';
-            gecmisBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-secondary);">Lütfen araç seçin</td></tr>';
+            gecmisBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-secondary);">Lütfen araç seçin</td></tr>';
             return;
         }
 
@@ -600,7 +608,7 @@
         let toplamYol = 0;
 
         if(filtrelenenSeferler.length === 0) {
-            gecmisBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-secondary);">Bu araca ait sefer bulunamadı</td></tr>';
+            gecmisBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-secondary);">Bu araca ait sefer bulunamadı</td></tr>';
             document.getElementById('toplamYolGosterge').innerText = '0 KM';
             return;
         }
@@ -614,6 +622,7 @@
                     <td>${s.cikisKm.toLocaleString()}</td>
                     <td>${s.donusKm !== null ? s.donusKm.toLocaleString() : 'Yolda'}</td>
                     <td><strong>${s.toplamKm !== null ? s.toplamKm.toLocaleString() + ' km' : '-'}</strong></td>
+                    <td class="no-print"><button class="btn-danger" onclick="seferSil(${s.id})">Sil</button></td>
                 </tr>
             `;
         });
