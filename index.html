@@ -8,15 +8,16 @@
         :root {
             --primary: #0066CC;
             --primary-hover: #0052A3;
-            --bg: #F2F4F7;           /* Göz yormayan yumuşak açık gri */
-            --card-bg: #FFFFFF;      /* Net kart zemini */
-            --text-main: #1A1D20;    /* Derin koyu gri metin */
-            --text-secondary: #6B7280;/* İkincil gri */
-            --border: #D1D5DB;       /* İnce zarif kenarlık */
-            --success: #10B981;
-            --danger: #EF4444;
-            --radius: 14px;
-            --shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+            --bg: #E9ECEF;           /* Göz yormayan, modern derin gri */
+            --card-bg: #F8F9FA;      /* Mat açık gri kart zemini */
+            --input-bg: #E2E6EA;     /* Tok gri form alanları */
+            --text-main: #212529;    /* Koyu antrasit metin */
+            --text-secondary: #6C757D;/* İkincil gri */
+            --border: #CED4DA;       /* Dengeli gri kenarlık */
+            --success: #198754;
+            --danger: #DC3545;
+            --radius: 12px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         * {
@@ -50,7 +51,7 @@
             font-size: 20px;
             font-weight: 700;
             margin: 0;
-            color: #111827;
+            color: #212529;
             letter-spacing: -0.5px;
         }
 
@@ -86,16 +87,26 @@
         }
 
         .input-group {
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             width: 100%;
         }
 
-        /* Tarihlerin taşmasını önleyen kusursuz grid yapısı */
+        /* Tarihlerin üst üste binmesini kesin olarak önleyen esnek yapı */
         .row-inputs {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
             margin-bottom: 0;
+        }
+
+        @media(min-width: 360px) {
+            .row-inputs {
+                flex-direction: row;
+            }
+            .row-inputs > div {
+                flex: 1;
+                min-width: 0;
+            }
         }
 
         label {
@@ -103,7 +114,7 @@
             font-size: 11px;
             font-weight: 700;
             color: var(--text-secondary);
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -111,7 +122,7 @@
         input, select {
             width: 100%;
             padding: 12px;
-            background: #F9FAFB;
+            background: var(--input-bg);
             border: 1px solid var(--border);
             border-radius: 10px;
             color: var(--text-main);
@@ -125,10 +136,8 @@
             background: #FFFFFF;
         }
 
-        /* Tarih inputlarının mobilde sıkışmasını engelleme */
         input[type="date"] {
             font-size: 13px;
-            padding: 11px 8px;
         }
 
         .btn-main {
@@ -142,7 +151,7 @@
             width: 100%;
             cursor: pointer;
             margin-top: 6px;
-            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2);
+            box-shadow: 0 4px 10px rgba(0, 102, 204, 0.2);
             transition: background 0.2s;
         }
 
@@ -151,7 +160,7 @@
         }
 
         .btn-pdf {
-            background: #DC2626;
+            background: var(--danger);
             color: white;
             border: none;
             border-radius: 10px;
@@ -165,7 +174,7 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+            box-shadow: 0 4px 10px rgba(220, 53, 69, 0.2);
         }
 
         .btn-main:active, .btn-pdf:active { opacity: 0.85; }
@@ -176,7 +185,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(255, 255, 255, 0.92);
+            background: #F8F9FA;
             border-top: 1px solid var(--border);
             display: flex;
             justify-content: space-around;
@@ -215,6 +224,7 @@
             margin-top: 10px;
             border-radius: 8px;
             border: 1px solid var(--border);
+            background: #FFFFFF;
         }
 
         table {
@@ -226,8 +236,8 @@
         }
 
         th {
-            background: #E5E7EB;
-            color: var(--text-secondary);
+            background: #DEE2E6;
+            color: var(--text-main);
             padding: 10px 12px;
             font-size: 11px;
             font-weight: 700;
@@ -263,11 +273,11 @@
 
         .stats-box {
             display: flex;
-            background: #EFF6FF;
-            border: 1px solid #BFDBFE;
-            border-radius: 12px;
+            background: #E2E8F0;
+            border: 1px solid #CBD5E1;
+            border-radius: 10px;
             padding: 14px 16px;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             justify-content: space-between;
             align-items: center;
         }
@@ -385,15 +395,15 @@
                 </select>
             </div>
 
-            <!-- Düzeltilmiş Yan Yana Tarih Alanı (Taşma Yapmaz) -->
+            <!-- Taşma Yapmayan Akıllı Tarih Alanı -->
             <div class="input-group">
                 <div class="row-inputs">
                     <div>
-                        <label>Başlangıç</label>
+                        <label>Başlangıç Tarihi</label>
                         <input type="date" id="tarihBas" onchange="aracGecmisiniYukle()">
                     </div>
                     <div>
-                        <label>Bitiş</label>
+                        <label>Bitiş Tarihi</label>
                         <input type="date" id="tarihBit" onchange="aracGecmisiniYukle()">
                     </div>
                 </div>
