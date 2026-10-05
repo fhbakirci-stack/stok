@@ -3,21 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Araç Takip</title>
+    <title>Araç Takip Sistemi</title>
+    <!-- PWA / Ana Ekran İkonu Desteği -->
+    <meta name="theme-color" content="#1a1a1a">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'><path d='M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.22.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-4.66l.12-.34h13.76l.12.34V17z'/></svg>">
     <style>
         :root {
-            --primary: #0066CC;
-            --primary-hover: #0052A3;
-            --bg: #E9ECEF;           
-            --card-bg: #F8F9FA;      
-            --input-bg: #E2E6EA;     
-            --text-main: #212529;    
-            --text-secondary: #6C757D;
-            --border: #CED4DA;       
-            --success: #198754;
-            --danger: #DC3545;
+            --primary: #333333;           /* Koyu kurumsal gri */
+            --primary-hover: #1a1a1a;     /* Neredeyse siyah */
+            --bg: #121212;                /* Çok koyu gri/siyah arka plan */
+            --card-bg: #1e1e1e;           /* Kart arka planı koyu gri */
+            --input-bg: #2a2a2a;          /* Input koyu gri */
+            --text-main: #e0e0e0;         /* Açık gri ana metin */
+            --text-secondary: #9e9e9e;    /* Orta gri ikincil metin */
+            --border: #333333;            /* Sınır çizgileri */
+            --success: #388e3c;           /* Mat yeşil */
+            --danger: #d32f2f;            /* Mat koyu kırmızı */
             --radius: 12px;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
         }
 
         * {
@@ -48,10 +51,10 @@
         }
 
         header h1 {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             margin: 0;
-            color: #212529;
+            color: var(--text-main);
             letter-spacing: -0.5px;
         }
 
@@ -79,11 +82,13 @@
         }
 
         .card-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             margin-top: 0;
             margin-bottom: 16px;
-            color: var(--primary);
+            color: var(--text-main);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
         }
 
         .input-group {
@@ -114,14 +119,14 @@
         }
 
         input:focus, select:focus {
-            border-color: var(--primary);
-            background: #FFFFFF;
+            border-color: #757575;
+            background: #252525;
         }
 
         .btn-main {
             background: var(--primary);
             color: white;
-            border: none;
+            border: 1px solid #444;
             border-radius: 10px;
             padding: 14px;
             font-size: 15px;
@@ -129,7 +134,7 @@
             width: 100%;
             cursor: pointer;
             margin-top: 6px;
-            box-shadow: 0 4px 10px rgba(0, 102, 204, 0.2);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             transition: background 0.2s;
         }
 
@@ -138,9 +143,9 @@
         }
 
         .btn-pdf {
-            background: var(--danger);
-            color: white;
-            border: none;
+            background: #262626;
+            color: #ff6b6b;
+            border: 1px solid #d32f2f;
             border-radius: 10px;
             padding: 14px;
             font-size: 15px;
@@ -152,7 +157,6 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-shadow: 0 4px 10px rgba(220, 53, 69, 0.2);
         }
 
         .btn-main:active, .btn-pdf:active { opacity: 0.85; }
@@ -163,7 +167,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: #F8F9FA;
+            background: #181818;
             border-top: 1px solid var(--border);
             display: flex;
             justify-content: space-around;
@@ -194,7 +198,7 @@
         }
 
         .nav-item.active {
-            color: var(--primary);
+            color: #ffffff;
         }
 
         .table-container {
@@ -202,7 +206,7 @@
             margin-top: 10px;
             border-radius: 8px;
             border: 1px solid var(--border);
-            background: #FFFFFF;
+            background: #181818;
         }
 
         table {
@@ -214,8 +218,8 @@
         }
 
         th {
-            background: #DEE2E6;
-            color: var(--text-main);
+            background: #242424;
+            color: var(--text-secondary);
             padding: 10px 12px;
             font-size: 11px;
             font-weight: 700;
@@ -225,7 +229,8 @@
         td {
             padding: 12px;
             border-top: 1px solid var(--border);
-            background: #FFFFFF;
+            background: #181818;
+            color: var(--text-main);
         }
 
         .btn-action {
@@ -251,8 +256,8 @@
 
         .stats-box {
             display: flex;
-            background: #E2E8F0;
-            border: 1px solid #CBD5E1;
+            background: #252525;
+            border: 1px solid var(--border);
             border-radius: 10px;
             padding: 14px 16px;
             margin-bottom: 14px;
@@ -264,7 +269,7 @@
         @media print {
             body { background: white; color: black; padding: 0; }
             .bottom-nav, .input-group, .btn-pdf, header { display: none !important; }
-            .glass-card { border: none; box-shadow: none; padding: 0; margin: 0; }
+            .glass-card { border: none; box-shadow: none; padding: 0; margin: 0; background: white !important; }
             table { width: 100%; border: 1px solid #ccc; }
             th, td { border: 1px solid #ccc; color: black; background: white !important; }
         }
@@ -274,8 +279,8 @@
 
 <div class="app-container">
     <header>
-        <h1>ARAÇ TAKİP SİSTEMİ</h1>
-        <span style="font-size: 12px; color: var(--text-secondary);" id="topTarih"></span>
+        <h1>Araç Takip Sistemi</h1>
+        <span style="font-size: 11px; color: var(--text-secondary);" id="topTarih"></span>
     </header>
 
     <!-- SAYFA 1: YENİ SEFER BAŞLAT -->
@@ -308,7 +313,7 @@
     <div id="page-donus" class="page">
         <div class="glass-card">
             <div class="card-title">🏁 Aktif Seferler & Dönüş İşlemleri</div>
-            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+            <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 16px;">
                 Yoldaki araçların dönüş kilometresini girerek seferi tamamlayın.
             </p>
             <div class="table-container">
@@ -374,8 +379,8 @@
             </div>
 
             <div class="stats-box">
-                <span style="font-size: 13px; color: var(--text-secondary); font-weight: 600;">Toplam Yapılan Yol</span>
-                <span style="font-size: 16px; font-weight: 700; color: var(--primary);" id="toplamYolGosterge">0 KM</span>
+                <span style="font-size: 12px; color: var(--text-secondary); font-weight: 600;">Toplam Yapılan Yol</span>
+                <span style="font-size: 15px; font-weight: 700; color: #ffffff;" id="toplamYolGosterge">0 KM</span>
             </div>
 
             <div class="table-container">
@@ -425,12 +430,12 @@
 <script>
     document.getElementById('topTarih').innerText = new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
 
-    let araclar = JSON.parse(localStorage.getItem('fs_araclar')) || [];
-    let seferler = JSON.parse(localStorage.getItem('fs_seferler')) || [];
+    let araclar = JSON.parse(localStorage.getItem('ats_araclar')) || [];
+    let seferler = JSON.parse(localStorage.getItem('ats_seferler')) || [];
 
     function verileriKaydet() {
-        localStorage.setItem('fs_araclar', JSON.stringify(araclar));
-        localStorage.setItem('fs_seferler', JSON.stringify(seferler));
+        localStorage.setItem('ats_araclar', JSON.stringify(araclar));
+        localStorage.setItem('ats_seferler', JSON.stringify(seferler));
         arayuzuYenile();
     }
 
