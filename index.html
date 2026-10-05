@@ -2,338 +2,485 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Araç Takip Sistemi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FS Nakliyat - Araç Takip</title>
     <style>
         :root {
-            --primary: #007AFF;
-            --bg: #F2F2F7;
-            --card: #FFFFFF;
-            --text: #1C1C1E;
-            --border: #C6C6C8;
-            --success: #34C759;
-            --danger: #FF3B30;
+            --primary: #0A84FF;
+            --primary-dark: #0056B3;
+            --bg: #000000;
+            --card-bg: #1C1C1E;
+            --text-main: #FFFFFF;
+            --text-secondary: #8E8E93;
+            --border: #38383A;
+            --success: #32D74B;
+            --danger: #FF453A;
+            --warning: #FFD60A;
+            --radius: 14px;
         }
+        
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg: #F2F2F7;
+                --card-bg: #FFFFFF;
+                --text-main: #000000;
+                --text-secondary: #6C6C70;
+                --border: #C6C6C8;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg);
-            color: var(--text);
+            color: var(--text-main);
             margin: 0;
             padding: 16px;
+            padding-bottom: 50px;
         }
-        .container {
-            max-width: 500px;
+
+        .app-container {
+            max-width: 480px;
             margin: 0 auto;
-            padding-bottom: 40px;
         }
-        h2 {
-            text-align: center;
-            font-size: 22px;
-            margin-bottom: 15px;
-        }
-        .tabs {
+
+        header {
             display: flex;
-            background: #E5E5EA;
-            border-radius: 10px;
-            padding: 3px;
-            margin-bottom: 16px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 4px;
         }
-        .tab {
+
+        header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        /* Navigasyon / Sekmeler */
+        .nav-tabs {
+            display: flex;
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .tab-btn {
             flex: 1;
-            text-align: center;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
             padding: 10px;
             font-size: 13px;
             font-weight: 600;
+            border-radius: 9px;
             cursor: pointer;
-            border-radius: 8px;
-            color: #3A3A3C;
+            transition: all 0.2s ease;
         }
-        .tab.active {
-            background: var(--card);
-            color: var(--primary);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
         }
-        .section {
+
+        .view-section {
             display: none;
+            animation: fadeIn 0.3s ease;
         }
-        .section.active {
+
+        .view-section.active {
             display: block;
         }
-        .card {
-            background: var(--card);
-            border-radius: 12px;
-            padding: 16px;
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Kart Tasarımları */
+        .glass-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 20px;
             margin-bottom: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
         }
-        .card h3 {
-            margin-top: 0;
+
+        .card-title {
             font-size: 16px;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 16px;
             color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+
+        /* Form Elemanları */
+        .input-group {
+            margin-bottom: 14px;
+        }
+
         label {
             display: block;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
-            margin-top: 10px;
-            margin-bottom: 4px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
+
         input, select {
             width: 100%;
-            padding: 10px;
+            padding: 12px 14px;
+            background: rgba(120, 120, 128, 0.08);
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 10px;
+            color: var(--text-main);
             font-size: 15px;
-            box-sizing: border-box;
-            background: #FAFAFC;
+            outline: none;
+            transition: border-color 0.2s;
         }
-        button {
-            background-color: var(--primary);
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-primary {
+            background: var(--primary);
             color: white;
             border: none;
-            border-radius: 8px;
-            padding: 12px;
+            border-radius: 10px;
+            padding: 14px;
             font-size: 16px;
             font-weight: 600;
             width: 100%;
-            margin-top: 14px;
             cursor: pointer;
+            margin-top: 6px;
+            box-shadow: 0 4px 14px rgba(10, 132, 255, 0.4);
+            transition: opacity 0.2s;
         }
-        button:active {
-            opacity: 0.8;
+
+        .btn-primary:active {
+            opacity: 0.7;
         }
-        .btn-sil {
-            background-color: var(--danger);
-            padding: 4px 8px;
-            font-size: 11px;
-            width: auto;
-            margin: 0;
+
+        /* Tablo Yapıları */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 12px;
-            margin-top: 10px;
+            font-size: 13px;
+            text-align: left;
+            white-space: nowrap;
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 6px;
-            text-align: center;
-        }
+
         th {
-            background-color: #E5E5EA;
-        }
-        .aktif-satir {
-            background-color: #FFF3CD;
-        }
-        .btn-kapat {
-            background-color: var(--success);
-            padding: 4px 8px;
+            background: rgba(120, 120, 128, 0.12);
+            color: var(--text-secondary);
+            padding: 10px 12px;
+            font-weight: 600;
             font-size: 11px;
-            margin: 0;
-            width: auto;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-active {
+            background: rgba(255, 214, 10, 0.15);
+            color: var(--warning);
+            border: 1px solid rgba(255, 214, 10, 0.3);
+        }
+
+        .badge-done {
+            background: rgba(50, 215, 75, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(50, 215, 75, 0.3);
+        }
+
+        .btn-action {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .stats-box {
+            display: flex;
+            background: rgba(10, 132, 255, 0.1);
+            border: 1px solid rgba(10, 132, 255, 0.3);
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 14px;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stats-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .stats-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>🚗 Araç Takip Sistemi</h2>
+<div class="app-container">
+    <header>
+        <h1>FS Nakliyat</h1>
+        <span style="font-size: 12px; color: var(--text-secondary);" id="topTarih"></span>
+    </header>
 
-    <div class="tabs">
-        <div class="tab active" onclick="sekmeDegistir('seferler')">Seferler</div>
-        <div class="tab" onclick="sekmeDegistir('araclar')">Araç Paneli</div>
-        <div class="tab" onclick="sekmeDegistir('gecmis')">Araç Geçmişi</div>
+    <!-- Navigasyon Sekmeleri -->
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('seferler')">Seferler</button>
+        <button class="tab-btn" onclick="switchTab('araclar')">Araçlar</button>
+        <button class="tab-btn" onclick="switchTab('gecmis')">Geçmiş & Rapor</button>
     </div>
 
-    <!-- 1. SEFERLER SEKMESİ -->
-    <div id="seferler-secim" class="section active">
-        <div class="card">
-            <h3>Yeni Sefer Çıkışı</h3>
-            <label>Araç Seçin</label>
-            <select id="seferPlakaSec">
-                <option value="">Önce Araç Ekleyin</option>
-            </select>
+    <!-- 1. SEFERLER BÖLÜMÜ -->
+    <div id="sec-seferler" class="view-section active">
+        <div class="glass-card">
+            <div class="card-title">✨ Yeni Sefer Çıkışı</div>
             
-            <label>Çıkış Yeri</label>
-            <input type="text" id="cikisYeri" placeholder="Örn: Ankara / İstanbul">
-            
-            <label>Çıkış Kilometresi (KM)</label>
-            <input type="number" id="cikisKm" placeholder="Örn: 45000">
+            <div class="input-group">
+                <label>Aktif Araç</label>
+                <select id="seferPlakaSec">
+                    <option value="">Önce araç ekleyin</option>
+                </select>
+            </div>
 
-            <button type="button" onclick="seferEkle()">Çıkış Kaydı Oluştur</button>
+            <div class="input-group">
+                <label>Çıkış Yeri / Rota</label>
+                <input type="text" id="cikisYeri" placeholder="Örn: İstanbul -> Antalya">
+            </div>
+
+            <div class="input-group">
+                <label>Çıkış Kilometresi (KM)</label>
+                <input type="number" id="cikisKm" placeholder="Örn: 124500">
+            </div>
+
+            <button class="btn-primary" onclick="yeniSeferBaslat()">Çıkış Kaydı Oluştur</button>
         </div>
 
-        <div class="card">
-            <h3>Aktif ve Son Seferler</h3>
-            <div style="overflow-x:auto;">
-                <table id="seferTablosu">
+        <div class="glass-card">
+            <div class="card-title">📋 Aktif ve Son Seferler</div>
+            <div class="table-container">
+                <table>
                     <thead>
                         <tr>
-                            <th>Plaka/Yer</th>
+                            <th>Araç / Rota</th>
                             <th>Çıkış KM</th>
                             <th>Dönüş KM</th>
                             <th>Toplam</th>
                             <th>İşlem</th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody id="seferlerTabloBody">
+                        <!-- Dinamik Dolacak -->
+                    </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- 2. ARAÇ YÖNETİMİ PANELİ -->
-    <div id="araclar-secim" class="section">
-        <div class="card">
-            <h3>Yeni Araç Tanımla</h3>
-            <label>Araç Plakası</label>
-            <input type="text" id="yeniPlaka" placeholder="Örn: 34ABC123">
-            <label>Araç Açıklaması / Model (İsteğe bağlı)</label>
-            <input type="text" id="aracModel" placeholder="Örn: Iveco Daily 5m">
-            <button type="button" onclick="aracEkle()">Aracı Kaydet</button>
+    <!-- 2. ARAÇLAR BÖLÜMÜ -->
+    <div id="sec-araclar" class="view-section">
+        <div class="glass-card">
+            <div class="card-title">🚛 Filo Yönetimi</div>
+            
+            <div class="input-group">
+                <label>Araç Plakası</label>
+                <input type="text" id="yeniPlaka" placeholder="Örn: 34ABC123" style="text-transform: uppercase;">
+            </div>
+
+            <div class="input-group">
+                <label>Araç Model / Detay</label>
+                <input type="text" id="aracModel" placeholder="Örn: Iveco Daily 5m">
+            </div>
+
+            <button class="btn-primary" onclick="aracTanimla()">Aracı Filoya Ekle</button>
         </div>
 
-        <div class="card">
-            <h3>Kayıtlı Araçlar</h3>
-            <div style="overflow-x:auto;">
-                <table id="aracListesiTablosu">
+        <div class="glass-card">
+            <div class="card-title">📌 Kayıtlı Araçlar</div>
+            <div class="table-container">
+                <table>
                     <thead>
                         <tr>
                             <th>Plaka</th>
-                            <th>Model/Açıklama</th>
+                            <th>Model</th>
                             <th>İşlem</th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody id="araclarTabloBody">
+                        <!-- Dinamik Dolacak -->
+                    </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- 3. ARAÇ GEÇMİŞİ SEKMESİ -->
-    <div id="gecmis-secim" class="section">
-        <div class="card">
-            <h3>Araç Bazlı Rapor & Geçmiş</h3>
-            <label>İncelenecek Aracı Seçin</label>
-            <select id="gecmisPlakaSec" onchange="aracGecmisiniGoster()">
-                <option value="">Araç Seçin</option>
-            </select>
-
-            <p id="aracToplamYol" style="font-weight: bold; margin-top: 15px; color: var(--primary);"></p>
+    <!-- 3. GEÇMİŞ & RAPOR BÖLÜMÜ -->
+    <div id="sec-gecmis" class="view-section">
+        <div class="glass-card">
+            <div class="card-title">📊 Araç Bazlı Sefer Geçmişi</div>
             
-            <div style="overflow-x:auto;">
-                <table id="gecmisTablosu">
+            <div class="input-group">
+                <label>İncelenecek Araç</label>
+                <select id="gecmisPlakaSec" onchange="aracGecmisiniYukle()">
+                    <option value="">Araç Seçin</option>
+                </select>
+            </div>
+
+            <div class="stats-box">
+                <span class="stats-label">Toplam Yapılan Yol</span>
+                <span class="stats-value" id="toplamYolGosterge">0 KM</span>
+            </div>
+
+            <div class="table-container" style="margin-top: 14px;">
+                <table>
                     <thead>
                         <tr>
                             <th>Tarih</th>
-                            <th>Çıkış Yeri</th>
-                            <th>Çıkış KM</th>
-                            <th>Dönüş KM</th>
-                            <th>Toplam KM</th>
+                            <th>Rota</th>
+                            <th>Çıkış</th>
+                            <th>Dönüş</th>
+                            <th>Toplam</th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody id="gecmisTabloBody">
+                        <!-- Dinamik Dolacak -->
+                    </tbody>
                 </table>
             </div>
         </div>
     </div>
-
 </div>
 
 <script>
-    // Verileri localStorage'dan güvenli çekme
-    let araclar = [];
-    let seferler = [];
+    // Tarih atama
+    document.getElementById('topTarih').innerText = new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
 
-    try {
-        araclar = JSON.parse(localStorage.getItem('arac_filosu')) || [];
-        seferler = JSON.parse(localStorage.getItem('arac_seferleri')) || [];
-    } catch (e) {
-        araclar = [];
-        seferler = [];
+    // Bellek verileri
+    let araclar = JSON.parse(localStorage.getItem('fs_araclar')) || [];
+    let seferler = JSON.parse(localStorage.getItem('fs_seferler')) || [];
+
+    function verileriKaydet() {
+        localStorage.setItem('fs_araclar', JSON.stringify(araclar));
+        localStorage.setItem('fs_seferler', JSON.stringify(seferler));
+        arayuzuYenile();
     }
 
-    function veriKaydet() {
-        try {
-            localStorage.setItem('arac_filosu', JSON.stringify(araclar));
-            localStorage.setItem('arac_seferleri', JSON.stringify(seferler));
-        } catch (e) {
-            alert("Kayıt sırasında hata oluştu: " + e.message);
-        }
-        ekranlariGuncelle();
-    }
-
-    function sekmeDegistir(isim) {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
         
-        if(isim === 'seferler') {
-            document.querySelectorAll('.tab')[0].classList.add('active');
-            document.getElementById('seferler-secim').classList.add('active');
-        } else if(isim === 'araclar') {
-            document.querySelectorAll('.tab')[1].classList.add('active');
-            document.getElementById('araclar-secim').classList.add('active');
-        } else if(isim === 'gecmis') {
-            document.querySelectorAll('.tab')[2].classList.add('active');
-            document.getElementById('gecmis-secim').classList.add('active');
+        if(tabName === 'seferler') {
+            document.querySelectorAll('.tab-btn')[0].classList.add('active');
+            document.getElementById('sec-seferler').classList.add('active');
+        } else if(tabName === 'araclar') {
+            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+            document.getElementById('sec-araclar').classList.add('active');
+        } else if(tabName === 'gecmis') {
+            document.querySelectorAll('.tab-btn')[2].classList.add('active');
+            document.getElementById('sec-gecmis').classList.add('active');
         }
     }
 
-    function aracEkle() {
+    function aracTanimla() {
         let plakaInput = document.getElementById('yeniPlaka');
         let modelInput = document.getElementById('aracModel');
-        
         let plaka = plakaInput.value.toUpperCase().trim();
         let model = modelInput.value.trim();
 
         if(!plaka) {
-            alert("Lütfen araç plakasını boş bırakmayın!");
+            alert("Lütfen araç plakasını boş bırakmayın.");
             return;
         }
 
-        // Zaten var mı kontrolü
-        let varMi = araclar.some(a => a.plaka === plaka);
-        if(varMi) {
-            alert("Bu plaka sistemde zaten kayıtlı!");
+        if(araclar.some(a => a.plaka === plaka)) {
+            alert("Bu plaka sistemde zaten kayıtlı.");
             return;
         }
 
-        araclar.push({ plaka: plaka, model: model });
+        araclar.push({ plaka, model });
         plakaInput.value = '';
         modelInput.value = '';
-        
-        veriKaydet();
-        alert("Araç başarıyla kaydedildi!");
+        verileriKaydet();
     }
 
     function aracSil(plaka) {
-        if(confirm(`${plaka} plakalı aracı silmek istediğinize emin misiniz?`)) {
+        if(confirm(`${plaka} plakalı aracı sistemden silmek istiyor musunuz?`)) {
             araclar = araclar.filter(a => a.plaka !== plaka);
-            veriKaydet();
+            verileriKaydet();
         }
     }
 
-    function seferEkle() {
+    function yeniSeferBaslat() {
         let plaka = document.getElementById('seferPlakaSec').value;
-        let cikisYeri = document.getElementById('cikisYeri').value.trim();
+        let yer = document.getElementById('cikisYeri').value.trim();
         let cikisKm = parseFloat(document.getElementById('cikisKm').value);
 
-        if(!plaka) {
-            alert("Lütfen bir araç seçin!");
-            return;
-        }
-        if(!cikisYeri || isNaN(cikisKm)) {
-            alert("Lütfen çıkış yerini ve geçerli bir çıkış kilometresi girin!");
+        if(!plaka || !yer || isNaN(cikisKm)) {
+            alert("Lütfen tüm alanları eksiksiz doldurun.");
             return;
         }
 
         let yeniSefer = {
             id: Date.now(),
-            plaka: plaka,
-            yer: cikisYeri,
-            tarih: new Date().toISOString().split('T')[0],
-            cikisKm: cikisKm,
+            plaka,
+            yer,
+            tarih: new Date().toLocaleDateString('tr-TR'),
+            cikisKm,
             donusKm: null,
             toplamKm: null
         };
@@ -341,133 +488,116 @@
         seferler.unshift(yeniSefer);
         document.getElementById('cikisYeri').value = '';
         document.getElementById('cikisKm').value = '';
-        veriKaydet();
-        alert("Çıkış kaydı oluşturuldu!");
+        verileriKaydet();
     }
 
-    function donusGir(id) {
+    function donusKilometresiAl(id) {
         let sefer = seferler.find(s => s.id === id);
         if(!sefer) return;
-        
-        let girilenDonus = prompt(`${sefer.plaka} - ${sefer.yer} için Dönüş Kilometresini girin:`, sefer.cikisKm);
-        
-        if (girilenDonus === null) return;
-        let donusKm = parseFloat(girilenDonus);
 
-        if (isNaN(donusKm) || donusKm < sefer.cikisKm) {
-            alert("Hata: Dönüş kilometresi çıkış kilometresinden küçük olamaz!");
+        let giris = prompt(`${sefer.plaka} (${sefer.yer}) için Dönüş Kilometresini giriniz:`, sefer.cikisKm);
+        if(giris === null) return;
+
+        let donusKm = parseFloat(giris);
+        if(isNaN(donusKm) || donusKm < sefer.cikisKm) {
+            alert("Hata: Dönüş kilometresi çıkış kilometresinden düşük olamaz!");
             return;
         }
 
         sefer.donusKm = donusKm;
         sefer.toplamKm = donusKm - sefer.cikisKm;
-        veriKaydet();
+        verileriKaydet();
     }
 
-    function ekranlariGuncelle() {
-        // Araç Seçim Kutularını Güncelle
-        let secim1 = document.getElementById('seferPlakaSec');
-        let secim2 = document.getElementById('gecmisPlakaSec');
-        
-        let secili1 = secim1.value;
-        let secili2 = secim2.value;
+    function arayuzuYenile() {
+        // Araç Seçim Kutuları
+        let sel1 = document.getElementById('seferPlakaSec');
+        let sel2 = document.getElementById('gecmisPlakaSec');
+        let val1 = sel1.value;
+        let val2 = sel2.value;
 
-        secim1.innerHTML = '<option value="">Araç Seçin</option>';
-        secim2.innerHTML = '<option value="">Araç Seçin</option>';
+        sel1.innerHTML = '<option value="">Araç Seçiniz</option>';
+        sel2.innerHTML = '<option value="">Araç Seçiniz</option>';
 
-        let aracTbody = document.querySelector('#aracListesiTablosu tbody');
-        aracTbody.innerHTML = '';
+        let aracBody = document.getElementById('araclarTabloBody');
+        aracBody.innerHTML = araclar.length === 0 ? '<tr><td colspan="3" style="text-align:center; color:var(--text-secondary);">Kayıtlı araç bulunmuyor</td></tr>' : '';
 
-        if(araclar.length === 0) {
-            aracTbody.innerHTML = `<tr><td colspan="3" style="color: #888;">Henüz kayıtlı araç yok.</td></tr>`;
-        } else {
-            araclar.forEach(a => {
-                secim1.innerHTML += `<option value="${a.plaka}">${a.plaka} ${a.model ? '('+a.model+')' : ''}</option>`;
-                secim2.innerHTML += `<option value="${a.plaka}">${a.plaka} ${a.model ? '('+a.model+')' : ''}</option>`;
-                
-                aracTbody.innerHTML += `
-                    <tr>
-                        <td><b>${a.plaka}</b></td>
-                        <td>${a.model || '-'}</td>
-                        <td><button type="button" class="btn-sil" onclick="aracSil('${a.plaka}')">Sil</button></td>
-                    </tr>
-                `;
-            });
-        }
-
-        // Seçimleri koru
-        secim1.value = secili1;
-        secim2.value = secili2;
-
-        // Seferler Tablosu
-        let seferTbody = document.querySelector('#seferTablosu tbody');
-        seferTbody.innerHTML = '';
-
-        if(seferler.length === 0) {
-            seferTbody.innerHTML = `<tr><td colspan="5" style="color: #888;">Henüz sefer kaydı yok.</td></tr>`;
-        } else {
-            seferler.forEach(s => {
-                let tr = document.createElement('tr');
-                if(s.donusKm === null) tr.classList.add('aktif-satir');
-
-                let islemBtn = s.donusKm === null 
-                    ? `<button type="button" class="btn-kapat" onclick="donusGir(${s.id})">Dönüş Gir</button>` 
-                    : 'Tamamlandı';
-
-                tr.innerHTML = `
-                    <td style="text-align:left"><b>${s.plaka}</b><br><small>${s.yer}</small></td>
-                    <td>${s.cikisKm}</td>
-                    <td>${s.donusKm !== null ? s.donusKm : '-'}</td>
-                    <td><b>${s.toplamKm !== null ? s.toplamKm + ' km' : '-'}</b></td>
-                    <td>${islemBtn}</td>
-                `;
-                seferTbody.appendChild(tr);
-            });
-        }
-
-        aracGecmisiniGoster();
-    }
-
-    function aracGecmisiniGoster() {
-        let secilenPlaka = document.getElementById('gecmisPlakaSec').value;
-        let tbody = document.querySelector('#gecmisTablosu tbody');
-        tbody.innerHTML = '';
-        
-        if(!secilenPlaka) {
-            document.getElementById('aracToplamYol').innerText = '';
-            tbody.innerHTML = `<tr><td colspan="5" style="color: #888;">Lütfen yukarıdan araç seçin.</td></tr>`;
-            return;
-        }
-
-        let aracSeferleri = seferler.filter(s => s.plaka === secilenPlaka);
-        let toplamYol = 0;
-
-        if(aracSeferleri.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="color: #888;">Bu araca ait sefer geçmişi bulunamadı.</td></tr>`;
-            document.getElementById('aracToplamYol').innerText = `${secilenPlaka} - Toplam Yol: 0 KM`;
-            return;
-        }
-
-        aracSeferleri.forEach(s => {
-            if(s.toplamKm !== null) toplamYol += s.toplamKm;
-            tbody.innerHTML += `
+        araclar.forEach(a => {
+            sel1.innerHTML += `<option value="${a.plaka}">${a.plaka} ${a.model ? '- '+a.model : ''}</option>`;
+            sel2.innerHTML += `<option value="${a.plaka}">${a.plaka} ${a.model ? '- '+a.model : ''}</option>`;
+            aracBody.innerHTML += `
                 <tr>
-                    <td>${s.tarih}</td>
-                    <td>${s.yer}</td>
-                    <td>${s.cikisKm}</td>
-                    <td>${s.donusKm !== null ? s.donusKm : 'Devam Ediyor'}</td>
-                    <td><b>${s.toplamKm !== null ? s.toplamKm + ' km' : '-'}</b></td>
+                    <td><strong>${a.plaka}</strong></td>
+                    <td>${a.model || '-'}</td>
+                    <td><button class="btn-danger" onclick="aracSil('${a.plaka}')">Sil</button></td>
                 </tr>
             `;
         });
 
-        document.getElementById('aracToplamYol').innerText = `${secilenPlaka} Toplam Yapılan Yol: ${toplamYol} KM`;
+        sel1.value = val1;
+        sel2.value = val2;
+
+        // Seferler Tablosu
+        let seferBody = document.getElementById('seferlerTabloBody');
+        seferBody.innerHTML = seferler.length === 0 ? '<tr><td colspan="5" style="text-align:center; color:var(--text-secondary);">Henüz sefer kaydı yok</td></tr>' : '';
+
+        seferler.forEach(s => {
+            let islemHTML = s.donusKm === null 
+                ? `<button class="btn-action" onclick="donusKilometresiAl(${s.id})">Dönüş Gir</button>` 
+                : `<span class="badge badge-done">Tamamlandı</span>`;
+
+            seferBody.innerHTML += `
+                <tr>
+                    <td><strong>${s.plaka}</strong><br><small style="color:var(--text-secondary);">${s.yer}</small></td>
+                    <td>${s.cikisKm.toLocaleString()}</td>
+                    <td>${s.donusKm !== null ? s.donusKm.toLocaleString() : '-'}</td>
+                    <td><strong>${s.toplamKm !== null ? s.toplamKm.toLocaleString() + ' km' : '-'}</strong></td>
+                    <td>${islemHTML}</td>
+                </tr>
+            `;
+        });
+
+        aracGecmisiniYukle();
     }
 
-    // Sayfa açıldığında verileri ekrana yükle
-    window.onload = function() {
-        ekranlariGuncelle();
-    };
+    function aracGecmisiniYukle() {
+        let secilenPlaka = document.getElementById('gecmisPlakaSec').value;
+        let gecmisBody = document.getElementById('gecmisTabloBody');
+        gecmisBody.innerHTML = '';
+
+        if(!secilenPlaka) {
+            document.getElementById('toplamYolGosterge').innerText = '0 KM';
+            gecmisBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-secondary);">Lütfen yukarıdan araç seçin</td></tr>';
+            return;
+        }
+
+        let filtrelenenSeferler = seferler.filter(s => s.plaka === secilenPlaka);
+        let toplamYol = 0;
+
+        if(filtrelenenSeferler.length === 0) {
+            gecmisBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-secondary);">Bu araca ait geçmiş sefer bulunamadı</td></tr>';
+            document.getElementById('toplamYolGosterge').innerText = '0 KM';
+            return;
+        }
+
+        filtrelenenSeferler.forEach(s => {
+            if(s.toplamKm !== null) toplamYol += s.toplamKm;
+            gecmisBody.innerHTML += `
+                <tr>
+                    <td><small>${s.tarih}</small></td>
+                    <td>${s.yer}</td>
+                    <td>${s.cikisKm.toLocaleString()}</td>
+                    <td>${s.donusKm !== null ? s.donusKm.toLocaleString() : 'Yolda'}</td>
+                    <td><strong>${s.toplamKm !== null ? s.toplamKm.toLocaleString() + ' km' : '-'}</strong></td>
+                </tr>
+            `;
+        });
+
+        document.getElementById('toplamYolGosterge').innerText = toplamYol.toLocaleString() + ' KM';
+    }
+
+    // İlk yükleme
+    window.onload = arayuzuYenile;
 </script>
 
 </body>
