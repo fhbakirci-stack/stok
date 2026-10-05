@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Araç Takip</title>
+    <title>FS Nakliyat - Araç Takip</title>
     <style>
         :root {
             --primary: #0066CC;
             --primary-hover: #0052A3;
-            --bg: #E9ECEF;           /* Göz yormayan, modern derin gri */
-            --card-bg: #F8F9FA;      /* Mat açık gri kart zemini */
-            --input-bg: #E2E6EA;     /* Tok gri form alanları */
-            --text-main: #212529;    /* Koyu antrasit metin */
-            --text-secondary: #6C757D;/* İkincil gri */
-            --border: #CED4DA;       /* Dengeli gri kenarlık */
+            --bg: #E9ECEF;           
+            --card-bg: #F8F9FA;      
+            --input-bg: #E2E6EA;     
+            --text-main: #212529;    
+            --text-secondary: #6C757D;
+            --border: #CED4DA;       
             --success: #198754;
             --danger: #DC3545;
             --radius: 12px;
@@ -91,21 +91,17 @@
             width: 100%;
         }
 
-        /* Tarihlerin üst üste binmesini kesin olarak önleyen esnek yapı */
+        /* Kesin Çözüm: CSS Grid ile akıllı yan yana / esnek yerleşim */
         .row-inputs {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            width: 100%;
         }
 
-        @media(min-width: 360px) {
+        @media (max-width: 340px) {
             .row-inputs {
-                flex-direction: row;
-            }
-            .row-inputs > div {
-                flex: 1;
-                min-width: 0;
+                grid-template-columns: 1fr; /* Sadece çok dar ekranlarda alt alta geçer */
             }
         }
 
@@ -137,7 +133,7 @@
         }
 
         input[type="date"] {
-            font-size: 13px;
+            font-size: 12px;
         }
 
         .btn-main {
@@ -296,7 +292,7 @@
 
 <div class="app-container">
     <header>
-        <h1>ARAÇ TAKİP SİSTEMİ</h1>
+        <h1>FS Nakliyat</h1>
         <span style="font-size: 12px; color: var(--text-secondary);" id="topTarih"></span>
     </header>
 
@@ -395,7 +391,7 @@
                 </select>
             </div>
 
-            <!-- Taşma Yapmayan Akıllı Tarih Alanı -->
+            <!-- Akıllı Izgara Yapısı (Asla Üst Üste Binmez) -->
             <div class="input-group">
                 <div class="row-inputs">
                     <div>
