@@ -7,7 +7,6 @@
     <style>
         :root {
             --primary: #0A84FF;
-            --primary-dark: #0056B3;
             --bg: #000000;
             --card-bg: #1C1C1E;
             --text-main: #FFFFFF;
@@ -16,7 +15,7 @@
             --success: #32D74B;
             --danger: #FF453A;
             --warning: #FFD60A;
-            --radius: 14px;
+            --radius: 16px;
         }
         
         @media (prefers-color-scheme: light) {
@@ -40,7 +39,7 @@
             color: var(--text-main);
             margin: 0;
             padding: 16px;
-            padding-bottom: 50px;
+            padding-bottom: 90px; /* Alt menü için boşluk */
         }
 
         .app-container {
@@ -52,84 +51,53 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             padding: 0 4px;
         }
 
         header h1 {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
             margin: 0;
             letter-spacing: -0.5px;
         }
 
-        /* Navigasyon / Sekmeler */
-        .nav-tabs {
-            display: flex;
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 4px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border);
-        }
-
-        .tab-btn {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            padding: 10px;
-            font-size: 13px;
-            font-weight: 600;
-            border-radius: 9px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .tab-btn.active {
-            background: var(--primary);
-            color: #FFFFFF;
-            box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
-        }
-
-        .view-section {
+        /* Sayfa Bölümleri */
+        .page {
             display: none;
-            animation: fadeIn 0.3s ease;
+            animation: fadeIn 0.25s ease;
         }
 
-        .view-section.active {
+        .page.active {
             display: block;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
         }
 
-        /* Kart Tasarımları */
+        /* Kart Yapıları */
         .glass-card {
             background: var(--card-bg);
             border-radius: var(--radius);
             padding: 20px;
             margin-bottom: 16px;
             border: 1px solid var(--border);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
         }
 
         .card-title {
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 600;
             margin-top: 0;
             margin-bottom: 16px;
             color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         /* Form Elemanları */
         .input-group {
-            margin-bottom: 14px;
+            margin-bottom: 16px;
         }
 
         label {
@@ -144,40 +112,71 @@
 
         input, select {
             width: 100%;
-            padding: 12px 14px;
+            padding: 14px;
             background: rgba(120, 120, 128, 0.08);
             border: 1px solid var(--border);
-            border-radius: 10px;
+            border-radius: 12px;
             color: var(--text-main);
-            font-size: 15px;
+            font-size: 16px;
             outline: none;
-            transition: border-color 0.2s;
         }
 
-        input:focus, select:focus {
-            border-color: var(--primary);
-        }
-
-        .btn-primary {
+        .btn-main {
             background: var(--primary);
             color: white;
             border: none;
-            border-radius: 10px;
-            padding: 14px;
+            border-radius: 12px;
+            padding: 16px;
             font-size: 16px;
             font-weight: 600;
             width: 100%;
             cursor: pointer;
-            margin-top: 6px;
-            box-shadow: 0 4px 14px rgba(10, 132, 255, 0.4);
-            transition: opacity 0.2s;
+            margin-top: 8px;
+            box-shadow: 0 4px 14px rgba(10, 132, 255, 0.3);
         }
 
-        .btn-primary:active {
-            opacity: 0.7;
+        .btn-main:active { opacity: 0.8; }
+
+        /* Alt Navigasyon Çubuğu (Native App Hissi) */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 4px 20px 4px;
+            z-index: 1000;
+            backdrop-filter: blur(20px);
         }
 
-        /* Tablo Yapıları */
+        .nav-item {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 10px;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+
+        .nav-item svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        /* Tablolar ve Listeler */
         .table-container {
             overflow-x: auto;
             margin-top: 10px;
@@ -196,43 +195,22 @@
         th {
             background: rgba(120, 120, 128, 0.12);
             color: var(--text-secondary);
-            padding: 10px 12px;
-            font-weight: 600;
+            padding: 10px;
             font-size: 11px;
             text-transform: uppercase;
         }
 
         td {
-            padding: 12px;
+            padding: 12px 10px;
             border-top: 1px solid var(--border);
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .badge-active {
-            background: rgba(255, 214, 10, 0.15);
-            color: var(--warning);
-            border: 1px solid rgba(255, 214, 10, 0.3);
-        }
-
-        .badge-done {
-            background: rgba(50, 215, 75, 0.15);
-            color: var(--success);
-            border: 1px solid rgba(50, 215, 75, 0.3);
         }
 
         .btn-action {
             background: var(--success);
             color: white;
             border: none;
-            padding: 6px 10px;
-            border-radius: 6px;
+            padding: 8px 12px;
+            border-radius: 8px;
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
@@ -242,7 +220,7 @@
             background: var(--danger);
             color: white;
             border: none;
-            padding: 4px 8px;
+            padding: 6px 10px;
             border-radius: 6px;
             font-size: 11px;
             cursor: pointer;
@@ -252,22 +230,11 @@
             display: flex;
             background: rgba(10, 132, 255, 0.1);
             border: 1px solid rgba(10, 132, 255, 0.3);
-            border-radius: 10px;
-            padding: 14px;
-            margin-top: 14px;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
             justify-content: space-between;
             align-items: center;
-        }
-
-        .stats-label {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        .stats-value {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--primary);
         }
     </style>
 </head>
@@ -279,20 +246,13 @@
         <span style="font-size: 12px; color: var(--text-secondary);" id="topTarih"></span>
     </header>
 
-    <!-- Navigasyon Sekmeleri -->
-    <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('seferler')">Seferler</button>
-        <button class="tab-btn" onclick="switchTab('araclar')">Araçlar</button>
-        <button class="tab-btn" onclick="switchTab('gecmis')">Geçmiş & Rapor</button>
-    </div>
-
-    <!-- 1. SEFERLER BÖLÜMÜ -->
-    <div id="sec-seferler" class="view-section active">
+    <!-- SAYFA 1: YENİ SEFER BAŞLAT -->
+    <div id="page-cikis" class="page active">
         <div class="glass-card">
-            <div class="card-title">✨ Yeni Sefer Çıkışı</div>
+            <div class="card-title">🚀 Yeni Sefer Çıkışı</div>
             
             <div class="input-group">
-                <label>Aktif Araç</label>
+                <label>Araç Seçin</label>
                 <select id="seferPlakaSec">
                     <option value="">Önce araç ekleyin</option>
                 </select>
@@ -308,34 +268,38 @@
                 <input type="number" id="cikisKm" placeholder="Örn: 124500">
             </div>
 
-            <button class="btn-primary" onclick="yeniSeferBaslat()">Çıkış Kaydı Oluştur</button>
+            <button class="btn-main" onclick="yeniSeferBaslat()">Sefer Başlat</button>
         </div>
+    </div>
 
+    <!-- SAYFA 2: SEFERİ BİTİR (DÖNÜŞ GİR) -->
+    <div id="page-donus" class="page">
         <div class="glass-card">
-            <div class="card-title">📋 Aktif ve Son Seferler</div>
+            <div class="card-title">🏁 Aktif Seferler & Dönüş İşlemleri</div>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+                Yoldaki araçların dönüş kilometresini girerek seferi tamamlayın.
+            </p>
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
                             <th>Araç / Rota</th>
                             <th>Çıkış KM</th>
-                            <th>Dönüş KM</th>
-                            <th>Toplam</th>
                             <th>İşlem</th>
                         </tr>
                     </thead>
-                    <tbody id="seferlerTabloBody">
-                        <!-- Dinamik Dolacak -->
+                    <tbody id="aktifSeferlerBody">
+                        <!-- Dinamik -->
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- 2. ARAÇLAR BÖLÜMÜ -->
-    <div id="sec-araclar" class="view-section">
+    <!-- SAYFA 3: ARAÇLAR (FİLO YÖNETİMİ) -->
+    <div id="page-araclar" class="page">
         <div class="glass-card">
-            <div class="card-title">🚛 Filo Yönetimi</div>
+            <div class="card-title">🚛 Araç Tanımla</div>
             
             <div class="input-group">
                 <label>Araç Plakası</label>
@@ -343,15 +307,15 @@
             </div>
 
             <div class="input-group">
-                <label>Araç Model / Detay</label>
+                <label>Model / Açıklama</label>
                 <input type="text" id="aracModel" placeholder="Örn: Iveco Daily 5m">
             </div>
 
-            <button class="btn-primary" onclick="aracTanimla()">Aracı Filoya Ekle</button>
+            <button class="btn-main" onclick="aracTanimla()">Aracı Kaydet</button>
         </div>
 
         <div class="glass-card">
-            <div class="card-title">📌 Kayıtlı Araçlar</div>
+            <div class="card-title">📌 Kayıtlı Filo</div>
             <div class="table-container">
                 <table>
                     <thead>
@@ -362,17 +326,17 @@
                         </tr>
                     </thead>
                     <tbody id="araclarTabloBody">
-                        <!-- Dinamik Dolacak -->
+                        <!-- Dinamik -->
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- 3. GEÇMİŞ & RAPOR BÖLÜMÜ -->
-    <div id="sec-gecmis" class="view-section">
+    <!-- SAYFA 4: GEÇMİŞ & RAPOR -->
+    <div id="page-gecmis" class="page">
         <div class="glass-card">
-            <div class="card-title">📊 Araç Bazlı Sefer Geçmişi</div>
+            <div class="card-title">📊 Araç Geçmişi & Rapor</div>
             
             <div class="input-group">
                 <label>İncelenecek Araç</label>
@@ -382,11 +346,11 @@
             </div>
 
             <div class="stats-box">
-                <span class="stats-label">Toplam Yapılan Yol</span>
-                <span class="stats-value" id="toplamYolGosterge">0 KM</span>
+                <span style="font-size: 13px; color: var(--text-secondary);">Toplam Yapılan Yol</span>
+                <span style="font-size: 18px; font-weight: 700; color: var(--primary);" id="toplamYolGosterge">0 KM</span>
             </div>
 
-            <div class="table-container" style="margin-top: 14px;">
+            <div class="table-container">
                 <table>
                     <thead>
                         <tr>
@@ -398,7 +362,7 @@
                         </tr>
                     </thead>
                     <tbody id="gecmisTabloBody">
-                        <!-- Dinamik Dolacak -->
+                        <!-- Dinamik -->
                     </tbody>
                 </table>
             </div>
@@ -406,11 +370,29 @@
     </div>
 </div>
 
+<!-- ALT NAVİGASYON ÇUBUĞU (Uygulama Alt Menüsü) -->
+<nav class="bottom-nav">
+    <button class="nav-item active" onclick="switchPage('cikis', this)">
+        <svg viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7 7-7z"/></svg>
+        Sefer Başlat
+    </button>
+    <button class="nav-item" onclick="switchPage('donus', this)">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        Seferi Bitir
+    </button>
+    <button class="nav-item" onclick="switchPage('araclar', this)">
+        <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.22.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-4.66l.12-.34h13.76l.12.34V17z"/></svg>
+        Araçlar
+    </button>
+    <button class="nav-item" onclick="switchPage('gecmis', this)">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        Raporlar
+    </button>
+</nav>
+
 <script>
-    // Tarih atama
     document.getElementById('topTarih').innerText = new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
 
-    // Bellek verileri
     let araclar = JSON.parse(localStorage.getItem('fs_araclar')) || [];
     let seferler = JSON.parse(localStorage.getItem('fs_seferler')) || [];
 
@@ -420,20 +402,12 @@
         arayuzuYenile();
     }
 
-    function switchTab(tabName) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+    function switchPage(pageId, btnElement) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         
-        if(tabName === 'seferler') {
-            document.querySelectorAll('.tab-btn')[0].classList.add('active');
-            document.getElementById('sec-seferler').classList.add('active');
-        } else if(tabName === 'araclar') {
-            document.querySelectorAll('.tab-btn')[1].classList.add('active');
-            document.getElementById('sec-araclar').classList.add('active');
-        } else if(tabName === 'gecmis') {
-            document.querySelectorAll('.tab-btn')[2].classList.add('active');
-            document.getElementById('sec-gecmis').classList.add('active');
-        }
+        document.getElementById('page-' + pageId).classList.add('active');
+        btnElement.classList.add('active');
     }
 
     function aracTanimla() {
@@ -456,10 +430,11 @@
         plakaInput.value = '';
         modelInput.value = '';
         verileriKaydet();
+        alert("Araç başarıyla kaydedildi.");
     }
 
     function aracSil(plaka) {
-        if(confirm(`${plaka} plakalı aracı sistemden silmek istiyor musunuz?`)) {
+        if(confirm(`${plaka} plakalı aracı silmek istiyor musunuz?`)) {
             araclar = araclar.filter(a => a.plaka !== plaka);
             verileriKaydet();
         }
@@ -489,6 +464,7 @@
         document.getElementById('cikisYeri').value = '';
         document.getElementById('cikisKm').value = '';
         verileriKaydet();
+        alert("Sefer başarıyla başlatıldı!");
     }
 
     function donusKilometresiAl(id) {
@@ -507,6 +483,7 @@
         sefer.donusKm = donusKm;
         sefer.toplamKm = donusKm - sefer.cikisKm;
         verileriKaydet();
+        alert("Sefer tamamlandı ve kaydedildi!");
     }
 
     function arayuzuYenile() {
@@ -537,22 +514,18 @@
         sel1.value = val1;
         sel2.value = val2;
 
-        // Seferler Tablosu
-        let seferBody = document.getElementById('seferlerTabloBody');
-        seferBody.innerHTML = seferler.length === 0 ? '<tr><td colspan="5" style="text-align:center; color:var(--text-secondary);">Henüz sefer kaydı yok</td></tr>' : '';
+        // Seferi Bitir (Aktif Seferler) Tablosu
+        let aktifBody = document.getElementById('aktifSeferlerBody');
+        let aktifSeferler = seferler.filter(s => s.donusKm === null);
+        
+        aktifBody.innerHTML = aktifSeferler.length === 0 ? '<tr><td colspan="3" style="text-align:center; color:var(--text-secondary);">Yolda aktif sefer bulunmuyor</td></tr>' : '';
 
-        seferler.forEach(s => {
-            let islemHTML = s.donusKm === null 
-                ? `<button class="btn-action" onclick="donusKilometresiAl(${s.id})">Dönüş Gir</button>` 
-                : `<span class="badge badge-done">Tamamlandı</span>`;
-
-            seferBody.innerHTML += `
+        aktifSeferler.forEach(s => {
+            aktifBody.innerHTML += `
                 <tr>
                     <td><strong>${s.plaka}</strong><br><small style="color:var(--text-secondary);">${s.yer}</small></td>
-                    <td>${s.cikisKm.toLocaleString()}</td>
-                    <td>${s.donusKm !== null ? s.donusKm.toLocaleString() : '-'}</td>
-                    <td><strong>${s.toplamKm !== null ? s.toplamKm.toLocaleString() + ' km' : '-'}</strong></td>
-                    <td>${islemHTML}</td>
+                    <td>${s.cikisKm.toLocaleString()} KM</td>
+                    <td><button class="btn-action" onclick="donusKilometresiAl(${s.id})">Dönüş Gir</button></td>
                 </tr>
             `;
         });
@@ -567,7 +540,7 @@
 
         if(!secilenPlaka) {
             document.getElementById('toplamYolGosterge').innerText = '0 KM';
-            gecmisBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-secondary);">Lütfen yukarıdan araç seçin</td></tr>';
+            gecmisBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-secondary);">Lütfen araç seçin</td></tr>';
             return;
         }
 
@@ -575,7 +548,7 @@
         let toplamYol = 0;
 
         if(filtrelenenSeferler.length === 0) {
-            gecmisBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-secondary);">Bu araca ait geçmiş sefer bulunamadı</td></tr>';
+            gecmisBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-secondary);">Geçmiş sefer bulunamadı</td></tr>';
             document.getElementById('toplamYolGosterge').innerText = '0 KM';
             return;
         }
@@ -596,7 +569,6 @@
         document.getElementById('toplamYolGosterge').innerText = toplamYol.toLocaleString() + ' KM';
     }
 
-    // İlk yükleme
     window.onload = arayuzuYenile;
 </script>
 
